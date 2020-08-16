@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherLib", "WeatherLib\WeatherLib.csproj", "{D6096AE7-B80D-4193-AF0B-4480E0943D32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherLib.Dwd.OpenData", "WeatherLib.Dwd.OpenData\WeatherLib.Dwd.OpenData.csproj", "{1D4B5CD0-3C6A-4E0F-9502-8500DCA403F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{D6096AE7-B80D-4193-AF0B-4480E0943D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6096AE7-B80D-4193-AF0B-4480E0943D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6096AE7-B80D-4193-AF0B-4480E0943D32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D4B5CD0-3C6A-4E0F-9502-8500DCA403F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D4B5CD0-3C6A-4E0F-9502-8500DCA403F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D4B5CD0-3C6A-4E0F-9502-8500DCA403F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D4B5CD0-3C6A-4E0F-9502-8500DCA403F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
