@@ -6,13 +6,16 @@ namespace WeatherLib
 {
     public class ForecastDataPoint
     {
-        public ForecastDataPoint(DateTime time, double temperature, double temperatureError, double windSpeed, double windSpeedError, double pressure, double pressureError, double cloudCover, WeatherType weather, int synopCode)
+        public ForecastDataPoint(DateTime time, double temperature, double temperatureError, double precipitation, double precipitationProbability, double windSpeed, double windSpeedError, double windDirection, double pressure, double pressureError, double cloudCover, WeatherType weather, int synopCode)
         {
             Time = time;
             Temperature = temperature;
             TemperatureError = temperatureError;
+            Precipitation = precipitation;
+            PrecipitationProbability = precipitationProbability;
             WindSpeed = windSpeed;
             WindSpeedError = windSpeedError;
+            WindDirection = windDirection;
             Pressure = pressure;
             PressureError = pressureError;
             CloudCover = cloudCover;
@@ -23,8 +26,11 @@ namespace WeatherLib
         public DateTime Time { get; }
         public double Temperature { get; }
         public double TemperatureError { get; }
+        public double Precipitation { get; }
+        public double PrecipitationProbability { get; }
         public double WindSpeed { get; }
         public double WindSpeedError { get; }
+        public double WindDirection { get; }
         public double Pressure { get; }
         public double PressureError { get; }
         public double CloudCover { get; }

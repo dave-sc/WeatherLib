@@ -187,10 +187,14 @@ namespace WeatherLib.Dwd.OpenData
             }
 
             var timeSteps = forecastXml.Descendants(dwd + "ForecastTimeSteps").Elements().Select(t => DateTime.SpecifyKind(DateTime.Parse(t.Value, DateTimeFormatInfo.InvariantInfo), DateTimeKind.Unspecified)).ToList();
+            // https://opendata.dwd.de/weather/lib/MetElementDefinition.xml
             var temperature = GetForecastByName("TTT");
             var temperatureError = GetForecastByName("E_TTT");
+            var precipitation = GetForecastByName("RR1");
+            var precipitationProbability = GetForecastByName("wwP");
             var windSpeed = GetForecastByName("FF");
             var windSpeedError = GetForecastByName("E_FF");
+            var windDirection = GetForecastByName("DD");
             var pressure = GetForecastByName("PPPP");
             var pressureError = GetForecastByName("E_PPP");
             var cloudCover = GetForecastByName("Neff");
@@ -198,9 +202,10 @@ namespace WeatherLib.Dwd.OpenData
 
             var detailedForecast = timeSteps
                 .Select((time, index) => new ForecastDataPoint(time,
-                    temperature[index] - 273.15, temperatureError[index], 
-                    windSpeed[index], windSpeedError[index], 
-                    pressure[index], pressureError[index], 
+                    temperature[index] - 273.15, temperatureError[index],
+                    precipitation[index], precipitationProbability[index],
+                    windSpeed[index], windSpeedError[index], windDirection[index],
+                    pressure[index], pressureError[index],
                     cloudCover[index], ParseWeatherType(weather[index], cloudCover[index]), (int)weather[index]))
                 .ToList();
             return (true, detailedForecast);
