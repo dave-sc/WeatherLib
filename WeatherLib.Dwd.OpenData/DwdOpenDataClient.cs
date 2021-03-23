@@ -194,7 +194,7 @@ namespace WeatherLib.Dwd.OpenData
             double ElementAtOrDefault(double[] arr, int i) => 
                 i < arr.Length ? arr[i] : double.NaN;
 
-            var timeSteps = forecastXml.Descendants(dwd + "ForecastTimeSteps").Elements().Select(t => DateTime.SpecifyKind(DateTime.Parse(t.Value, DateTimeFormatInfo.InvariantInfo), DateTimeKind.Unspecified)).ToList();
+            var timeSteps = forecastXml.Descendants(dwd + "ForecastTimeSteps").Elements().Select(t => DateTime.Parse(t.Value, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal)).ToList();
             // https://opendata.dwd.de/weather/lib/MetElementDefinition.xml
             var temperature = GetForecastByName("TTT");
             var temperatureError = GetForecastByName("E_TTT");
