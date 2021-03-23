@@ -179,18 +179,26 @@ namespace WeatherLib.Dwd.OpenData
             if (placemark == null)
                 return (false, null);
 
-            var dataLines = placemark.Descendants(dwd + "Forecast").ToList();
-            double[] GetForecastByName(string elementName)
-            {
-                return dataLines.FirstOrDefault(f => string.Equals(f.Attribute(dwd + "elementName")?.Value, elementName, StringComparison.OrdinalIgnoreCase))
-                                ?.Value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(v => double.TryParse(v, NumberStyles.Number, CultureInfo.InvariantCulture, out var n) ? n : double.NaN).ToArray() ?? Array.Empty<double>();
-            }
+            string ExtractForecastName(XElement f) => f.Attribute(dwd + "elementName")?.Value;
+            double[] ExtractForecastValues(XElement f) => f.Value
+                .Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)
+                .Select(v => double.TryParse(v, NumberStyles.Number, CultureInfo.InvariantCulture, out var n) ? n : double.NaN)
+                .ToArray();
+            
+            var dataLines = placemark.Descendants(dwd + "Forecast")
+                .OrderBy(ExtractForecastName)
+                .ToDictionary(ExtractForecastName, ExtractForecastValues);
+            double[] GetForecastByName(string elementName) => 
+                dataLines.GetValueOrDefault(elementName, Array.Empty<double>());
+
+            double ElementAtOrDefault(double[] arr, int i) => 
+                i < arr.Length ? arr[i] : double.NaN;
 
             var timeSteps = forecastXml.Descendants(dwd + "ForecastTimeSteps").Elements().Select(t => DateTime.SpecifyKind(DateTime.Parse(t.Value, DateTimeFormatInfo.InvariantInfo), DateTimeKind.Unspecified)).ToList();
             // https://opendata.dwd.de/weather/lib/MetElementDefinition.xml
             var temperature = GetForecastByName("TTT");
             var temperatureError = GetForecastByName("E_TTT");
-            var precipitation = GetForecastByName("RR1");
+            var precipitation = GetForecastByName("RR1c");
             var precipitationProbability = GetForecastByName("wwP");
             var windSpeed = GetForecastByName("FF");
             var windSpeedError = GetForecastByName("E_FF");
@@ -202,11 +210,11 @@ namespace WeatherLib.Dwd.OpenData
 
             var detailedForecast = timeSteps
                 .Select((time, index) => new ForecastDataPoint(time,
-                    temperature[index] - 273.15, temperatureError[index],
-                    precipitation[index], precipitationProbability[index],
-                    windSpeed[index], windSpeedError[index], windDirection[index],
-                    pressure[index], pressureError[index],
-                    cloudCover[index], ParseWeatherType(weather[index], cloudCover[index]), (int)weather[index]))
+                    ElementAtOrDefault(temperature,index) - 273.15, ElementAtOrDefault(temperatureError,index),
+                    ElementAtOrDefault(precipitation,index), ElementAtOrDefault(precipitationProbability,index),
+                    ElementAtOrDefault(windSpeed,index), ElementAtOrDefault(windSpeedError,index), ElementAtOrDefault(windDirection,index),
+                    ElementAtOrDefault(pressure,index), ElementAtOrDefault(pressureError,index),
+                    ElementAtOrDefault(cloudCover,index), ParseWeatherType(ElementAtOrDefault(weather,index), ElementAtOrDefault(cloudCover,index)), (int)ElementAtOrDefault(weather,index)))
                 .ToList();
             return (true, detailedForecast);
         }
