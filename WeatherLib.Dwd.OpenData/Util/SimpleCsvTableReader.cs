@@ -40,7 +40,7 @@ namespace WeatherLib.Dwd.OpenData.Util
                 if (columns.Length != columnHeaders.Length)
                     continue;
                 
-                var tableRow = columnHeaders.Select((header, i) => (header: header, index: i)).ToDictionary(c => c.header?.Trim()?.ToLower() ?? c.index.ToString(), c => columns[c.index]);
+                var tableRow = columnHeaders.Select((header, i) => (header: header, index: i)).ToDictionary(c => c.header?.Trim().ToLower() ?? c.index.ToString(), c => columns[c.index]);
                 tableRows.Add(tableRow);
             }
 

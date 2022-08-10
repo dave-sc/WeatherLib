@@ -38,7 +38,7 @@ namespace WeatherLib.Dwd.OpenData.Util
                 if (tableStructureMatch.Success)
                 {
                     var columnCaptures = tableStructureMatch.Groups[2].Captures;
-                    tableStructure = columnCaptures.Cast<Capture>().ToDictionary(c => lastLine?.Substring(c.Index, c.Length)?.ToLower()?.Trim() ?? c.Index.ToString(), c => (c.Index, c.Length));
+                    tableStructure = columnCaptures.ToDictionary(c => lastLine?.Substring(c.Index, c.Length)?.ToLower()?.Trim() ?? c.Index.ToString(), c => (c.Index, c.Length));
                     tableWidth = currentLine.Length;
                     continue;
                 }
