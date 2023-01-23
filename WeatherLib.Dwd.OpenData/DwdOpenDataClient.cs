@@ -107,11 +107,11 @@ namespace WeatherLib.Dwd.OpenData
                 if (!values.TryGetValue("name", out var name))
                     return null;
 
-                if (!values.TryGetValue("nb.", out var latitudeStr))
+                if (!values.TryGetValue("nb.", out var latitudeStr) && !values.TryGetValue("lat", out latitudeStr))
                     return null;
                 var latitude = double.Parse(latitudeStr.Trim(), CultureInfo.InvariantCulture);
 
-                if (!values.TryGetValue("el.", out var longitudeStr))
+                if (!values.TryGetValue("el.", out var longitudeStr) && !values.TryGetValue("lon", out longitudeStr))
                     return null;
                 var longitude = double.Parse(longitudeStr.Trim(), CultureInfo.InvariantCulture);
 
