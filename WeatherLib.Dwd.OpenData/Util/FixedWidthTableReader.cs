@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,6 +9,8 @@ namespace WeatherLib.Dwd.OpenData.Util
 {
     internal static class FixedWidthTableReader
     {
+        private static readonly Regex TableStructureRegex = new(@"^((=+\s*?|-+\s*?)\s?)+$", RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+        
         public static Task<IEnumerable<IReadOnlyDictionary<string, string>>> ReadTableAsync(Stream stream)
         {
             using (var reader = new StreamReader(stream))
@@ -34,11 +37,11 @@ namespace WeatherLib.Dwd.OpenData.Util
                 if (currentLine == null)
                     break;
 
-                var tableStructureMatch = Regex.Match(currentLine, @"^((=+|-+)\s?)+$");
+                var tableStructureMatch = TableStructureRegex.Match(currentLine);
                 if (tableStructureMatch.Success)
                 {
                     var columnCaptures = tableStructureMatch.Groups[2].Captures;
-                    tableStructure = columnCaptures.ToDictionary(c => lastLine?.Substring(c.Index, c.Length)?.ToLower()?.Trim() ?? c.Index.ToString(), c => (c.Index, c.Length));
+                    tableStructure = columnCaptures.ToDictionary(c => lastLine?.Substring(c.Index, Math.Min(c.Length, lastLine.Length - c.Index)).ToLower().Trim() ?? c.Index.ToString(), c => (c.Index, c.Length));
                     tableWidth = currentLine.Length;
                     continue;
                 }
@@ -52,7 +55,7 @@ namespace WeatherLib.Dwd.OpenData.Util
                     continue;
                 }
 
-                var tableRow = tableStructure.ToDictionary(t => t.Key.ToLower(), t => currentLine.Substring(t.Value.index, t.Value.length));
+                var tableRow = tableStructure.ToDictionary(t => t.Key.ToLower(), t => currentLine.Substring(t.Value.index, Math.Min(t.Value.length, currentLine.Length - t.Value.index)));
                 tableRows.Add(tableRow);
             }
 
